@@ -9,7 +9,6 @@ public class ReservationSeatId implements Serializable {
     private UUID reservation;
     private Integer seatNumber;
 
-
     public ReservationSeatId() {
     }
 
