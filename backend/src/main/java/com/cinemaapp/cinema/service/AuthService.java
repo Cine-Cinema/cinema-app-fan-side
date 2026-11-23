@@ -5,15 +5,18 @@ import com.cinemaapp.cinema.entity.Fan;
 import com.cinemaapp.cinema.repository.FanRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.cinemaapp.cinema.security.JwtService;
 
 @Service
 public class AuthService {
     private final FanRepository fanRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(FanRepository fanRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(FanRepository fanRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.fanRepository = fanRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     // Fan Registration
