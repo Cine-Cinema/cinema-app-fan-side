@@ -6,6 +6,8 @@ import com.cinemaapp.cinema.repository.FanRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.cinemaapp.cinema.security.JwtService;
+import com.cinemaapp.cinema.dto.LoginRequest;
+import com.cinemaapp.cinema.dto.AuthResponse;
 
 @Service
 public class AuthService {
@@ -40,5 +42,28 @@ public class AuthService {
 
         // Save the fan in the database
         return fanRepository.save(fan);
+    }
+
+    // Fan Login
+    public AuthResponse loginFan(LoginRequest request) {
+
+        // Find the fan using email
+        Fan fan = fanRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        // Verify the entered password
+        if (!passwordEncoder.matches(request.getPassword(), fan.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        // Generate JWT token
+        String token = jwtService.generateToken(fan.getEmail());
+
+        // Return authentication response
+        return new AuthResponse(
+                token,
+                fan.getEmail(),
+                fan.getFullName()
+        );
     }
 }
