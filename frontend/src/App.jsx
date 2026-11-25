@@ -1,28 +1,39 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import AuthPage from "./pages/AuthPage.jsx";
+import AuthPage from "./pages/AuthPage";
 import AccountPage from "./pages/AccountPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import MoviesPage from "./pages/MoviesPage.jsx";
 
 function App() {
 
-  return (
+    return (
 
-      <Routes>
-        {/* Login and registration */}
-        <Route path="/login" element={<AuthPage />} />
+        <Routes>
 
-        {/* Protected account page */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/account" element={<AccountPage />} />
-        </Route>
+            <Route path="/login" element={<AuthPage />} />
 
-        {/* Default route */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-      </Routes>
+            <Route element={<ProtectedRoute />}>
 
-  );
+                <Route path="/account" element={<AccountPage />} />
+
+            </Route>
+
+            <Route
+                path="/"
+                element={<Navigate to="/login" replace />}
+            />
+
+            {/* Temporary route until Movies page is implemented */}
+            <Route
+                path="/movies"
+                element={<MoviesPage />}
+            />
+
+        </Routes>
+
+    );
 }
 
 export default App;

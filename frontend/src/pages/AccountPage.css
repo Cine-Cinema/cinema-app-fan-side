@@ -1,0 +1,417 @@
+/* Main page */
+
+.account-page {
+    min-height: 100vh;
+    background: #08090a;
+    color: #f5f5f5;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Header */
+
+.account-header {
+    height: 76px;
+    border-bottom: 1px solid #252525;
+
+    display: flex;
+    align-items: center;
+}
+
+.account-header-content {
+    width: min(1148px, calc(100% - 48px));
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* Brand */
+
+.account-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.account-brand-icon {
+    width: 39px;
+    height: 39px;
+
+    border-radius: 50%;
+    background: #f45642;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-brand-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* Navigation */
+
+.account-navigation {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+}
+
+.account-navigation > a {
+    color: #d0d0d0;
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 15px;
+
+    border: 1px solid #343434;
+    border-radius: 30px;
+
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.user-icon {
+    font-size: 19px;
+}
+
+
+/* Main content */
+
+.account-main {
+    width: min(1028px, calc(100% - 48px));
+    margin: 0 auto;
+
+    padding: 60px 0;
+}
+
+
+/* Heading */
+
+.account-title-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 37px;
+}
+
+.account-eyebrow {
+    margin: 0 0 8px;
+
+    color: #f45642;
+
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+}
+
+.account-title-section h1 {
+    margin: 0;
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.sign-out-button {
+    padding: 11px 17px;
+
+    border: 1px solid #353535;
+    border-radius: 30px;
+
+    background: transparent;
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.sign-out-button:hover {
+    border-color: #f45642;
+}
+
+
+/* Two-column content */
+
+.account-content {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+
+    gap: 26px;
+    align-items: start;
+}
+
+
+/* Personal details card */
+
+.personal-card {
+    padding: 32px 30px;
+
+    border: 1px solid #303030;
+    border-radius: 23px;
+
+    background: #141516;
+}
+
+.personal-card h2,
+.tickets-section h2 {
+    margin: 0;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.card-description {
+    margin: 12px 0 30px;
+
+    color: #777d8b;
+    font-size: 13px;
+}
+
+
+/* Form */
+
+.account-form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+    margin-bottom: 20px;
+}
+
+.account-form-group label {
+    color: #e5e5e5;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.account-form-group label span {
+    color: #777d8b;
+    font-weight: 400;
+}
+
+.account-form-group input {
+    width: 100%;
+    height: 46px;
+
+    padding: 0 15px;
+
+    border: 1px solid #414141;
+    border-radius: 12px;
+
+    background: #202122;
+    color: #ffffff;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+.account-form-group input:focus {
+    border-color: #f45642;
+}
+
+.account-form-group input:disabled {
+    background: #101112;
+    border-color: #292929;
+
+    color: #788397;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+
+/* Save button */
+
+.save-button {
+    height: 46px;
+
+    padding: 0 23px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #f45642;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #e94b38;
+}
+
+.save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* Messages */
+
+.account-error {
+    color: #ff7777;
+    font-size: 13px;
+}
+
+.account-success {
+    color: #70d99b;
+    font-size: 13px;
+}
+
+
+/* Tickets section */
+
+.tickets-section h2 {
+    margin-bottom: 20px;
+}
+
+.empty-tickets-card {
+    padding: 35px 20px;
+
+    border: 1px solid #303030;
+    border-radius: 17px;
+
+    background: #141516;
+
+    text-align: center;
+}
+
+.ticket-icon {
+    width: 45px;
+    height: 45px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+    background: rgba(244, 86, 66, 0.15);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #f45642;
+    font-size: 23px;
+}
+
+.empty-tickets-card h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+.empty-tickets-card p {
+    margin: 0 0 20px;
+
+    color: #858b98;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.browse-movies-button {
+    display: inline-block;
+
+    padding: 11px 18px;
+
+    border-radius: 10px;
+
+    background: #f45642;
+    color: #ffffff;
+
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Loading and error states */
+
+.account-message {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    background: #08090a;
+    color: #ffffff;
+}
+
+
+/* Responsive design */
+
+@media (max-width: 850px) {
+
+    .account-content {
+        grid-template-columns: 1fr;
+    }
+
+    .personal-card {
+        max-width: 550px;
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .account-header-content,
+    .account-main {
+        width: calc(100% - 32px);
+    }
+
+    .account-main {
+        padding: 40px 0;
+    }
+
+    .account-title-section h1 {
+        font-size: 25px;
+    }
+
+    .account-navigation {
+        gap: 12px;
+    }
+
+    .account-navigation > a {
+        display: none;
+    }
+
+    .user-profile {
+        padding: 9px 11px;
+        font-size: 11px;
+    }
+
+    .personal-card {
+        padding: 24px 20px;
+    }
+
+}

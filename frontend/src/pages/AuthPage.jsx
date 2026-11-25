@@ -44,7 +44,7 @@ function AuthPage() {
 
             if (activeTab === "login") {
                 await login(email, password);
-                navigate("/account");
+                navigate("/movies");
 
             } else {
                 await registerFan(fullName, email, password, phone);
