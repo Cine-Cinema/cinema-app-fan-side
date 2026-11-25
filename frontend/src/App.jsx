@@ -11,13 +11,9 @@ function App() {
     return (
 
         <Routes>
-
             <Route path="/login" element={<AuthPage />} />
-
             <Route element={<ProtectedRoute />}>
-
                 <Route path="/account" element={<AccountPage />} />
-
             </Route>
 
             <Route
@@ -30,9 +26,7 @@ function App() {
                 path="/movies"
                 element={<MoviesPage />}
             />
-
         </Routes>
-
     );
 }
 
