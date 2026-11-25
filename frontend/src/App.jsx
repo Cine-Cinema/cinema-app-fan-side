@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import LoginPage from "./pages/LoginPage";
+import AuthPage from "./pages/AuthPage.jsx";
 import AccountPage from "./pages/AccountPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -10,10 +10,10 @@ function App() {
   return (
 
       <Routes>
-        {/* Public route */}
-        <Route path="/login" element={<LoginPage />} />
+        {/* Login and registration */}
+        <Route path="/login" element={<AuthPage />} />
 
-        {/* Protected routes */}
+        {/* Protected account page */}
         <Route element={<ProtectedRoute />}>
           <Route path="/account" element={<AccountPage />} />
         </Route>
