@@ -30,4 +30,9 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             @Param("title") String title,
             @Param("date") LocalDate date
     );
+
+    // Retrieves all active showtimes for a particular movie, ordered by date and time.
+    List<Showtime> findByMovieIdAndActiveTrueOrderByShowDateAscShowTimeAsc(
+            Long movieId
+    );
 }

@@ -20,17 +20,13 @@ public class MovieService {
         this.showtimeRepository = showtimeRepository;
     }
 
+    // Search movies by title and/or date
     public List<MovieSearchResponse> searchMovies(String title, LocalDate date) {
 
-        // Convert an empty title into null
+        // Convert an empty title into an empty string
         if (title == null || title.isBlank()) {
             title = "";
         } else {
-            title = title.trim();
-        }
-
-        // Remove unnecessary spaces from the title
-        if (title != null) {
             title = title.trim();
         }
 
@@ -60,7 +56,10 @@ public class MovieService {
                                 showtime.getCinemaName(),
                                 showtime.getShowDate(),
                                 showtime.getShowTime(),
-                                showtime.getPrice()
+                                showtime.getPrice(),
+                                showtime.getTotalSeats(),
+                                showtime.getSeatsPerRow(),
+                                showtime.getReservedSeats()
                         )
                 );
 
@@ -85,7 +84,10 @@ public class MovieService {
                                 showtime.getCinemaName(),
                                 showtime.getShowDate(),
                                 showtime.getShowTime(),
-                                showtime.getPrice()
+                                showtime.getPrice(),
+                                showtime.getTotalSeats(),
+                                showtime.getSeatsPerRow(),
+                                showtime.getReservedSeats()
                         )
                 );
             }
@@ -93,5 +95,65 @@ public class MovieService {
 
         // Convert the map values into a list
         return new ArrayList<>(movieMap.values());
+    }
+
+
+    // Get details of a particular movie
+    public MovieSearchResponse getMovieDetails(Long movieId) {
+
+        // Get all active showtimes for this movie
+        List<Showtime> allShowtimes =
+                showtimeRepository
+                        .findByMovieIdAndActiveTrueOrderByShowDateAscShowTimeAsc(
+                                movieId
+                        );
+
+        // Check whether the movie exists
+        if (allShowtimes.isEmpty()) {
+            return null;
+        }
+
+        // Get movie information from the first record
+        Showtime firstShowtime = allShowtimes.get(0);
+
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Calculate the last date of the 30-day period
+        LocalDate lastDate = today.plusDays(29);
+
+        // Store showtimes available within the next 30 days
+        List<MovieSearchResponse.ShowtimeInfo> movieShowtimes =
+                new ArrayList<>();
+
+        for (Showtime showtime : allShowtimes) {
+
+            // Include only showtimes within the next 30 days
+            if (!showtime.getShowDate().isBefore(today)
+                    && !showtime.getShowDate().isAfter(lastDate)) {
+
+                movieShowtimes.add(
+                        new MovieSearchResponse.ShowtimeInfo(
+                                showtime.getId(),
+                                showtime.getCinemaName(),
+                                showtime.getShowDate(),
+                                showtime.getShowTime(),
+                                showtime.getPrice(),
+                                showtime.getTotalSeats(),
+                                showtime.getSeatsPerRow(),
+                                showtime.getReservedSeats()
+                        )
+                );
+            }
+        }
+
+        // Return movie information and its available showtimes
+        return new MovieSearchResponse(
+                firstShowtime.getMovieId(),
+                firstShowtime.getTitle(),
+                firstShowtime.getDescription(),
+                firstShowtime.getPosterUrl(),
+                movieShowtimes
+        );
     }
 }

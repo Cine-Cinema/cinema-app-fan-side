@@ -55,19 +55,28 @@ public class MovieSearchResponse {
         private LocalDate showDate;
         private LocalTime showTime;
         private BigDecimal price;
+        private Integer totalSeats;
+        private Integer seatsPerRow;
+        private Integer[] reservedSeats;
 
         public ShowtimeInfo(
                 Long showtimeId,
                 String cinemaName,
                 LocalDate showDate,
                 LocalTime showTime,
-                BigDecimal price
+                BigDecimal price,
+                Integer totalSeats,
+                Integer seatsPerRow,
+                Integer[] reservedSeats
         ) {
             this.showtimeId = showtimeId;
             this.cinemaName = cinemaName;
             this.showDate = showDate;
             this.showTime = showTime;
             this.price = price;
+            this.totalSeats = totalSeats;
+            this.seatsPerRow = seatsPerRow;
+            this.reservedSeats = reservedSeats;
         }
 
         public Long getShowtimeId() {
@@ -88,6 +97,18 @@ public class MovieSearchResponse {
 
         public BigDecimal getPrice() {
             return price;
+        }
+
+        public Integer getTotalSeats() {
+            return totalSeats;
+        }
+
+        public Integer getSeatsPerRow() {
+            return seatsPerRow;
+        }
+
+        public Integer[] getReservedSeats() {
+            return reservedSeats;
         }
     }
 }

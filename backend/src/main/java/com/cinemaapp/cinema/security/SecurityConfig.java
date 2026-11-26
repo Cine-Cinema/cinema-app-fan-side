@@ -52,7 +52,7 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/health"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/movies/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

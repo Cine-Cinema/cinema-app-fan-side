@@ -36,4 +36,19 @@ public class MovieController {
 
         return ResponseEntity.ok(movies);
     }
+
+    @GetMapping("/{movieId}")
+    public ResponseEntity<MovieSearchResponse> getMovieDetails(
+            @PathVariable Long movieId
+    ) {
+
+        MovieSearchResponse movie =
+                movieService.getMovieDetails(movieId);
+
+        if (movie == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(movie);
+    }
 }
