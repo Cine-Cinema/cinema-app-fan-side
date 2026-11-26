@@ -216,6 +216,10 @@ function MoviesPage() {
                                                 "https://placehold.co/400x550?text=No+Poster"
                                             }
                                             alt={movie.title}
+                                            onError={(e) => {
+                                                e.currentTarget.src =
+                                                    "https://placehold.co/400x550?text=No+Poster";
+                                            }}
                                         />
                                     </div>
 

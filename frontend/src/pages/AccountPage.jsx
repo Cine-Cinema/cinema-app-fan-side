@@ -102,9 +102,7 @@ function AccountPage() {
                 Loading your account...
             </div>
         );
-
     }
-
 
     // Error state
     if (!fan) {

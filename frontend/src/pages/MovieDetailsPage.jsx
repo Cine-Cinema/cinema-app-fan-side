@@ -14,6 +14,12 @@ function MovieDetailsPage() {
     // Store the selected date
     const [selectedDate, setSelectedDate] = useState("");
 
+    // Store the selected showtime
+    const [selectedShowtime, setSelectedShowtime] = useState(null);
+
+    // Store the seat numbers selected by the user
+    const [selectedSeats, setSelectedSeats] = useState([]);
+
     // Store loading and error states
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -95,6 +101,42 @@ function MovieDetailsPage() {
         return <div className="movie-details-message">Movie not found.</div>;
     }
 
+    // Select a showtime
+    const handleShowtimeSelect = (showtime) => {
+        setSelectedShowtime(showtime);
+
+        // Clear previously selected seats
+        setSelectedSeats([]);
+    };
+
+
+    // Select or unselect a seat
+    const handleSeatSelect = (seatNumber) => {
+
+        // Do not allow selection of reserved seats
+        if (selectedShowtime.reservedSeats?.includes(seatNumber)) {
+            return;
+        }
+
+        setSelectedSeats((previousSeats) => {
+
+            // If the seat is already selected, remove it
+            if (previousSeats.includes(seatNumber)) {
+                return previousSeats.filter(
+                    (seat) => seat !== seatNumber
+                );
+            }
+
+            // Otherwise, add the seat
+            return [...previousSeats, seatNumber];
+        });
+    };
+
+
+    // Calculate the total amount
+    const totalAmount =
+        selectedSeats.length * Number(selectedShowtime?.price || 0);
+
     return (
         <div className="movie-details-page">
 
@@ -140,30 +182,174 @@ function MovieDetailsPage() {
             <section className="showtime-section">
                 <h2>Available Showtimes</h2>
                 {selectedShowtimes.length > 0 ? (
+
                     <div className="showtimes-list">
+
                         {selectedShowtimes.map((showtime) => (
+
                             <button
                                 key={showtime.showtimeId}
-                                className="showtime-button"
+                                className={`showtime-button ${
+                                    selectedShowtime?.showtimeId === showtime.showtimeId
+                                        ? "selected"
+                                        : ""
+                                }`}
+                                onClick={() => handleShowtimeSelect(showtime)}
                             >
+                    <span>
+                        {showtime.showTime.slice(0, 5)}
+                    </span>
+
                                 <span>
-                                    {showtime.showTime.slice(0, 5)}
-                                </span>
-                                <span>
-                                    Rs. {showtime.price}
-                                </span>
+                        Rs. {Number(showtime.price).toLocaleString()}
+                    </span>
+
                                 <small>
                                     {showtime.cinemaName}
                                 </small>
                             </button>
+
                         ))}
+
                     </div>
+
                 ) : (
+
                     <p className="unavailable-message">
-                        Oops! This movie is not available for this date.
+                        Oops! This movie is not available for that day.
                     </p>
+
                 )}
+
             </section>
+
+
+            {/* Seat Selection */}
+            {selectedShowtime && (
+
+                <section className="seat-selection-section">
+
+                    <h2>Select Your Seats</h2>
+
+                    <p className="seat-selection-description">
+                        Select one or more available seats.
+                    </p>
+
+
+                    {/* Seat Legend */}
+                    <div className="seat-legend">
+
+                        <div>
+                            <span className="legend-seat available"></span>
+                            <span>Available</span>
+                        </div>
+
+                        <div>
+                            <span className="legend-seat reserved"></span>
+                            <span>Reserved</span>
+                        </div>
+
+                        <div>
+                            <span className="legend-seat selected"></span>
+                            <span>Selected</span>
+                        </div>
+
+                    </div>
+
+
+                    {/* Cinema Screen */}
+                    <div className="cinema-screen">
+                        SCREEN
+                    </div>
+
+
+                    {/* Seat Map */}
+                    <div
+                        className="seat-map"
+                        style={{
+                            gridTemplateColumns: `repeat(${selectedShowtime.seatsPerRow}, minmax(28px, 1fr))`
+                        }}
+                    >
+
+                        {Array.from(
+                            { length: selectedShowtime.totalSeats },
+                            (_, index) => index + 1
+                        ).map((seatNumber) => {
+
+                            const isReserved =
+                                selectedShowtime.reservedSeats?.includes(seatNumber);
+
+                            const isSelected =
+                                selectedSeats.includes(seatNumber);
+
+                            return (
+
+                                <button
+                                    key={seatNumber}
+                                    type="button"
+                                    disabled={isReserved}
+                                    className={`seat ${
+                                        isReserved
+                                            ? "reserved"
+                                            : isSelected
+                                                ? "selected"
+                                                : "available"
+                                    }`}
+                                    onClick={() => handleSeatSelect(seatNumber)}
+                                    title={`Seat ${seatNumber}`}
+                                    aria-label={`Seat ${seatNumber}, ${
+                                        isReserved
+                                            ? "Reserved"
+                                            : isSelected
+                                                ? "Selected"
+                                                : "Available"
+                                    }`}
+                                >
+                                    {seatNumber}
+
+                                </button>
+
+                            );
+                        })}
+
+                    </div>
+
+
+                    {/* Booking Summary */}
+                    <div className="booking-summary">
+
+                        <div className="selected-seat-details">
+
+                            <h3>Selected Seats</h3>
+
+                            {selectedSeats.length > 0 ? (
+                                <p>
+                                    {selectedSeats
+                                        .sort((a, b) => a - b)
+                                        .join(", ")}
+                                </p>
+                            ) : (
+                                <p>No seats selected</p>
+                            )}
+
+                        </div>
+
+
+                        <div className="total-amount">
+
+                            <span>Total Amount</span>
+
+                            <h2>
+                                Rs. {totalAmount.toLocaleString()}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            )}
         </div>
     );
 }
