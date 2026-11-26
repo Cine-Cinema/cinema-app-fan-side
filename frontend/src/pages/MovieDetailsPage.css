@@ -1,0 +1,165 @@
+.movie-details-page {
+    min-height: 100vh;
+    padding: 40px 7%;
+    background-color: #08090a;
+    color: #ffffff;
+}
+
+/* Loading and error messages */
+
+.movie-details-message {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #08090a;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+
+/* Movie Information */
+
+.movie-details-container {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    margin-bottom: 50px;
+}
+
+.movie-details-poster {
+    width: 220px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.movie-details-info h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.movie-details-info p {
+    color: #b5b5b5;
+    line-height: 1.7;
+    max-width: 650px;
+}
+
+
+/* Date Selection */
+
+.date-selection-section {
+    margin-bottom: 45px;
+}
+
+.date-selection-section h2,
+.showtime-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.date-selector {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 2px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #f45642 #202020;
+}
+
+.date-button {
+    min-width: 100px;
+    padding: 16px 12px;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    background-color: #171819;
+    color: #ffffff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.date-button:hover {
+    border-color: #f45642;
+}
+
+.date-button.selected {
+    background-color: #f45642;
+    border-color: #f45642;
+    color: #ffffff;
+}
+
+
+/* Showtime Selection */
+
+.showtimes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.showtime-button {
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid #333333;
+    border-radius: 10px;
+    background-color: #171819;
+    color: #ffffff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.showtime-button:hover {
+    border-color: #f45642;
+    transform: translateY(-3px);
+}
+
+.showtime-button span:first-child {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.showtime-button span:nth-child(2) {
+    color: #f45642;
+}
+
+.showtime-button small {
+    color: #aaaaaa;
+}
+
+
+/* Unavailable Message */
+
+.unavailable-message {
+    color: #aaaaaa;
+    padding: 20px;
+    background-color: #171819;
+    border-radius: 10px;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 600px) {
+
+    .movie-details-page {
+        padding: 25px 5%;
+    }
+
+    .movie-details-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .movie-details-poster {
+        width: 180px;
+        height: 250px;
+    }
+
+    .movie-details-info h1 {
+        font-size: 28px;
+    }
+
+}

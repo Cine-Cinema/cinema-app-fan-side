@@ -16,6 +16,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
                 <Route path="/account" element={<AccountPage />} />
                 <Route path="/movies" element={<MoviesPage />} />
+                <Route path="/movies/:movieId" element={<MovieDetailsPage />} />
             </Route>
 
             <Route
