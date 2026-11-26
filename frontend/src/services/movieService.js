@@ -1,7 +1,36 @@
-const API_BASE_URL =
-    import.meta.env.VITE_API_URL;
+// const API_BASE_URL =
+//     import.meta.env.VITE_API_URL;
+//
+// export async function searchMovies(title = "", date = "") {
+//     const params = new URLSearchParams();
+//
+//     if (title.trim()) {
+//         params.append("title", title.trim());
+//     }
+//
+//     if (date) {
+//         params.append("date", date);
+//     }
+//
+//     const queryString = params.toString();
+//
+//     const url = `${API_BASE_URL}/api/movies/search${
+//         queryString ? `?${queryString}` : ""
+//     }`;
+//
+//     const response = await fetch(url);
+//
+//     if (!response.ok) {
+//         throw new Error(`Movie search failed: ${response.status}`);
+//     }
+//
+//     return await response.json();
+// }
 
-export async function searchMovies(title = "", date = "") {
+const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
+
+export async function searchMovies(title = "", date = "", signal) {
     const params = new URLSearchParams();
 
     if (title.trim()) {
@@ -18,11 +47,22 @@ export async function searchMovies(title = "", date = "") {
         queryString ? `?${queryString}` : ""
     }`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, { signal });
+
+    // Read the response as text first, so we can see what the server returned.
+    const responseText = await response.text();
 
     if (!response.ok) {
-        throw new Error(`Movie search failed: ${response.status}`);
+        throw new Error(
+            `Request failed (${response.status}): ${responseText}`
+        );
     }
 
-    return await response.json();
+    try {
+        return JSON.parse(responseText);
+    } catch {
+        throw new Error(
+            `The server did not return JSON. Response: ${responseText.substring(0, 300)}`
+        );
+    }
 }

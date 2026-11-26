@@ -5,6 +5,7 @@ import AccountPage from "./pages/AccountPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import MoviesPage from "./pages/MoviesPage.jsx";
+import MovieDetailsPage from "./pages/MovieDetailsPage.jsx";
 
 function App() {
 
@@ -14,17 +15,12 @@ function App() {
             <Route path="/login" element={<AuthPage />} />
             <Route element={<ProtectedRoute />}>
                 <Route path="/account" element={<AccountPage />} />
+                <Route path="/movies" element={<MoviesPage />} />
             </Route>
 
             <Route
                 path="/"
                 element={<Navigate to="/login" replace />}
-            />
-
-            {/* Temporary route until Movies page is implemented */}
-            <Route
-                path="/movies"
-                element={<MoviesPage />}
             />
         </Routes>
     );
