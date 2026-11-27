@@ -3,6 +3,24 @@ import { useParams } from "react-router-dom";
 import { getMovieDetails } from "../services/movieService";
 import "./MovieDetailsPage.css";
 
+// Convert a JavaScript Date into YYYY-MM-DD
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+};
+
+// Format the date for displaying in the date selector
+const displayDate = (date) => {
+    return new Intl.DateTimeFormat("en", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+    }).format(date);
+};
+
 function MovieDetailsPage() {
 
     // Get the movie ID from the URL
@@ -12,7 +30,9 @@ function MovieDetailsPage() {
     const [movie, setMovie] = useState(null);
 
     // Store the selected date
-    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedDate, setSelectedDate] = useState(
+        formatDate(new Date())
+    );
 
     // Store the selected showtime
     const [selectedShowtime, setSelectedShowtime] = useState(null);
@@ -33,24 +53,7 @@ function MovieDetailsPage() {
         return date;
     });
 
-    // Convert a JavaScript Date into YYYY-MM-DD
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-
-        return `${year}-${month}-${day}`;
-    };
-
-    // Format the date for displaying in the date selector
-    const displayDate = (date) => {
-        return new Intl.DateTimeFormat("en", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-        }).format(date);
-    };
-
+    // Handle date selection
     const handleDateSelect = (dateValue) => {
         setSelectedDate(dateValue);
 
@@ -76,7 +79,6 @@ function MovieDetailsPage() {
             } catch (err) {
                 console.error("Error fetching movie details:", err);
                 setError("Unable to load movie details. Please try again.");
-
             } finally {
                 setLoading(false);
             }
@@ -86,11 +88,6 @@ function MovieDetailsPage() {
 
     }, [movieId]);
 
-    // Select today's date when the page loads
-    useEffect(() => {
-        setSelectedDate(formatDate(new Date()));
-    }, []);
-
     // Filter showtimes according to the selected date
     const selectedShowtimes = movie?.showtimes?.filter(
         (showtime) => showtime.showDate === selectedDate
@@ -98,17 +95,29 @@ function MovieDetailsPage() {
 
     // Display loading message
     if (loading) {
-        return <div className="movie-details-message">Loading movie details...</div>;
+        return (
+            <div className="movie-details-message">
+                Loading movie details...
+            </div>
+        );
     }
 
     // Display error message
     if (error) {
-        return <div className="movie-details-message">{error}</div>;
+        return (
+            <div className="movie-details-message">
+                {error}
+            </div>
+        );
     }
 
     // Display message if movie is unavailable
     if (!movie) {
-        return <div className="movie-details-message">Movie not found.</div>;
+        return (
+            <div className="movie-details-message">
+                Movie not found.
+            </div>
+        );
     }
 
     // Select a showtime
@@ -119,12 +128,14 @@ function MovieDetailsPage() {
         setSelectedSeats([]);
     };
 
-
     // Select or unselect a seat
     const handleSeatSelect = (seatNumber) => {
 
+        // Reserved seats will be received from the backend in a future update
+        const reservedSeats = selectedShowtime.reservedSeats || [];
+
         // Do not allow selection of reserved seats
-        if (selectedShowtime.reservedSeats?.includes(seatNumber)) {
+        if (reservedSeats.includes(seatNumber)) {
             return;
         }
 
@@ -142,6 +153,8 @@ function MovieDetailsPage() {
         });
     };
 
+    // Get reserved seats if the backend provides them
+    const reservedSeats = selectedShowtime?.reservedSeats || [];
 
     // Calculate the total amount
     const totalAmount =
@@ -154,9 +167,16 @@ function MovieDetailsPage() {
             <section className="movie-details-container">
 
                 <img
-                    src={movie.posterUrl}
+                    src={
+                        movie.posterUrl ||
+                        "https://placehold.co/400x550?text=No+Poster"
+                    }
                     alt={movie.title}
                     className="movie-details-poster"
+                    onError={(e) => {
+                        e.currentTarget.src =
+                            "https://placehold.co/400x550?text=No+Poster";
+                    }}
                 />
 
                 <div className="movie-details-info">
@@ -166,31 +186,37 @@ function MovieDetailsPage() {
 
             </section>
 
-
             {/* Date Selector */}
             <section className="date-selection-section">
                 <h2>Select a Date</h2>
+
                 <div className="date-selector">
+
                     {dates.map((date) => {
                         const dateValue = formatDate(date);
+
                         return (
                             <button
                                 key={dateValue}
+                                type="button"
                                 className={`date-button ${
-                                    selectedDate === dateValue ? "selected" : ""
-                                }`}
+    selectedDate === dateValue ? "selected" : ""
+}`}
                                 onClick={() => handleDateSelect(dateValue)}
                             >
                                 <span>{displayDate(date)}</span>
                             </button>
                         );
                     })}
+
                 </div>
             </section>
 
             {/* Showtime Selection */}
             <section className="showtime-section">
+
                 <h2>Available Showtimes</h2>
+
                 {selectedShowtimes.length > 0 ? (
 
                     <div className="showtimes-list">
@@ -199,24 +225,22 @@ function MovieDetailsPage() {
 
                             <button
                                 key={showtime.showtimeId}
+                                type="button"
                                 className={`showtime-button ${
-                                    selectedShowtime?.showtimeId === showtime.showtimeId
-                                        ? "selected"
-                                        : ""
-                                }`}
+    selectedShowtime?.showtimeId === showtime.showtimeId
+        ? "selected"
+        : ""
+}`}
                                 onClick={() => handleShowtimeSelect(showtime)}
                             >
-                    <span>
-                        {showtime.showTime.slice(0, 5)}
-                    </span>
+                                <span>
+                                    {showtime.showTime.slice(0, 5)}
+                                </span>
 
                                 <span>
-                        Rs. {Number(showtime.price).toLocaleString()}
-                    </span>
+                                    Rs. {Number(showtime.price).toLocaleString()}
+                                </span>
 
-                                <small>
-                                    {showtime.cinemaName}
-                                </small>
                             </button>
 
                         ))}
@@ -233,10 +257,11 @@ function MovieDetailsPage() {
 
             </section>
 
-
             {/* Seat Selection */}
             {selectedShowtime && (
+
                 <section className="seat-selection-section">
+
                     <h2>Select Your Seats</h2>
 
                     <p className="seat-selection-description">
@@ -245,6 +270,7 @@ function MovieDetailsPage() {
 
                     {/* Seat Legend */}
                     <div className="seat-legend">
+
                         <div>
                             <span className="legend-seat available"></span>
                             <span>Available</span>
@@ -262,12 +288,10 @@ function MovieDetailsPage() {
 
                     </div>
 
-
                     {/* Cinema Screen */}
                     <div className="cinema-screen">
                         SCREEN
                     </div>
-
 
                     {/* Seat Map */}
                     <div
@@ -283,7 +307,7 @@ function MovieDetailsPage() {
                         ).map((seatNumber) => {
 
                             const isReserved =
-                                selectedShowtime.reservedSeats?.includes(seatNumber);
+                                reservedSeats.includes(seatNumber);
 
                             const isSelected =
                                 selectedSeats.includes(seatNumber);
@@ -295,31 +319,29 @@ function MovieDetailsPage() {
                                     type="button"
                                     disabled={isReserved}
                                     className={`seat ${
-                                        isReserved
-                                            ? "reserved"
-                                            : isSelected
-                                                ? "selected"
-                                                : "available"
-                                    }`}
+    isReserved
+        ? "reserved"
+        : isSelected
+            ? "selected"
+            : "available"
+}`}
                                     onClick={() => handleSeatSelect(seatNumber)}
                                     title={`Seat ${seatNumber}`}
                                     aria-label={`Seat ${seatNumber}, ${
-                                        isReserved
-                                            ? "Reserved"
-                                            : isSelected
-                                                ? "Selected"
-                                                : "Available"
-                                    }`}
+    isReserved
+        ? "Reserved"
+        : isSelected
+            ? "Selected"
+            : "Available"
+}`}
                                 >
                                     {seatNumber}
-
                                 </button>
 
                             );
                         })}
 
                     </div>
-
 
                     {/* Booking Summary */}
                     <div className="booking-summary">
@@ -330,7 +352,7 @@ function MovieDetailsPage() {
 
                             {selectedSeats.length > 0 ? (
                                 <p>
-                                    {selectedSeats
+                                    {[...selectedSeats]
                                         .sort((a, b) => a - b)
                                         .join(", ")}
                                 </p>
@@ -339,7 +361,6 @@ function MovieDetailsPage() {
                             )}
 
                         </div>
-
 
                         <div className="total-amount">
 
@@ -356,6 +377,7 @@ function MovieDetailsPage() {
                 </section>
 
             )}
+
         </div>
     );
 }

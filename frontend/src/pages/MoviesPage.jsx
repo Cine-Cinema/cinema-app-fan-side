@@ -28,6 +28,7 @@ function MoviesPage() {
                 );
 
                 setMovies(Array.isArray(results) ? results : []);
+
             } catch (err) {
                 if (err.name !== "AbortError") {
                     console.error("Error searching movies:", err);
@@ -58,6 +59,7 @@ function MoviesPage() {
             const results = await searchMovies(title, date);
 
             setMovies(Array.isArray(results) ? results : []);
+
         } catch (err) {
             console.error("Error searching movies:", err);
             setError(err.message);
@@ -67,6 +69,7 @@ function MoviesPage() {
         }
     };
 
+    // Clear search fields
     const handleClear = () => {
         setTitle("");
         setDate("");
@@ -132,7 +135,7 @@ function MoviesPage() {
                 <section className="search-section">
                     <div className="section-heading">
                         <h2>Explore Movies</h2>
-                        <p>Find movies by title or showing date.</p>
+                        <p>Find movies by title.</p>
                     </div>
 
                     <form
@@ -175,6 +178,7 @@ function MoviesPage() {
                 <section className="results-section">
                     <div className="results-heading">
                         <h2>Now Showing</h2>
+
                         <span>
                             {movies.length} {movies.length === 1 ? "movie" : "movies"}
                         </span>
@@ -231,13 +235,16 @@ function MoviesPage() {
                                                 "No description available."}
                                         </p>
 
-                                        <span className="view-details">View Details →</span>
+                                        <span className="view-details">
+                                            View Details →
+                                        </span>
                                     </div>
                                 </Link>
                             ))}
                         </div>
                     )}
                 </section>
+
             </main>
 
             {/* Footer */}

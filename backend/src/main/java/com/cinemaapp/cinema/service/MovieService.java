@@ -1,7 +1,9 @@
 package com.cinemaapp.cinema.service;
 
 import com.cinemaapp.cinema.dto.MovieSearchResponse;
+import com.cinemaapp.cinema.entity.Movie;
 import com.cinemaapp.cinema.entity.Showtime;
+import com.cinemaapp.cinema.repository.MovieRepository;
 import com.cinemaapp.cinema.repository.ShowtimeRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +11,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MovieService {
 
+    private final MovieRepository movieRepository;
     private final ShowtimeRepository showtimeRepository;
 
-    public MovieService(ShowtimeRepository showtimeRepository) {
+    public MovieService(
+            MovieRepository movieRepository,
+            ShowtimeRepository showtimeRepository
+    ) {
+        this.movieRepository = movieRepository;
         this.showtimeRepository = showtimeRepository;
     }
 
@@ -30,76 +36,91 @@ public class MovieService {
             title = title.trim();
         }
 
-        // Get matching active showtimes from the database
-        List<Showtime> showtimes =
-                showtimeRepository.searchActiveShowtimes(title, date);
+        // Get matching movies from the movies table
+        List<Movie> movies;
 
-        // Store movies using movieId as the key
-        Map<Long, MovieSearchResponse> movieMap = new LinkedHashMap<>();
+        if (title.isEmpty()) {
+            movies = movieRepository.findAll();
+        } else {
+            movies = movieRepository.findByTitleContainingIgnoreCase(title);
+        }
 
-        for (Showtime showtime : showtimes) {
+        // Store the movie responses
+        List<MovieSearchResponse> movieResponses = new ArrayList<>();
 
-            Long movieId = showtime.getMovieId();
+        for (Movie movie : movies) {
 
-            // Check whether this movie has already been added
-            MovieSearchResponse movie = movieMap.get(movieId);
+            // Get active showtimes for this movie
+            List<Showtime> showtimes;
 
-            if (movie == null) {
+            if (date != null) {
+                showtimes = showtimeRepository
+                        .findByMovieIdAndShowDateAndActiveTrueOrderByShowTimeAsc(
+                                movie.getId(),
+                                date
+                        );
+            } else {
+                showtimes = showtimeRepository
+                        .findByMovieIdAndActiveTrueOrderByShowDateAscShowTimeAsc(
+                                movie.getId()
+                        );
+            }
 
-                // Create the showtime information
-                List<MovieSearchResponse.ShowtimeInfo> movieShowtimes =
-                        new ArrayList<>();
+            // If a date was provided, skip movies without screenings on that date
+            if (date != null && showtimes.isEmpty()) {
+                continue;
+            }
+
+            // Convert showtimes into ShowtimeInfo objects
+            List<MovieSearchResponse.ShowtimeInfo> movieShowtimes =
+                    new ArrayList<>();
+
+            for (Showtime showtime : showtimes) {
 
                 movieShowtimes.add(
                         new MovieSearchResponse.ShowtimeInfo(
                                 showtime.getId(),
-                                showtime.getCinemaName(),
                                 showtime.getShowDate(),
                                 showtime.getShowTime(),
                                 showtime.getPrice(),
                                 showtime.getTotalSeats(),
-                                showtime.getSeatsPerRow(),
-                                showtime.getReservedSeats()
-                        )
-                );
-
-                // Create a new movie response
-                movie = new MovieSearchResponse(
-                        movieId,
-                        showtime.getTitle(),
-                        showtime.getDescription(),
-                        showtime.getPosterUrl(),
-                        movieShowtimes
-                );
-
-                // Add the movie to the map
-                movieMap.put(movieId, movie);
-
-            } else {
-
-                // Movie already exists, so add another screening
-                movie.getShowtimes().add(
-                        new MovieSearchResponse.ShowtimeInfo(
-                                showtime.getId(),
-                                showtime.getCinemaName(),
-                                showtime.getShowDate(),
-                                showtime.getShowTime(),
-                                showtime.getPrice(),
-                                showtime.getTotalSeats(),
-                                showtime.getSeatsPerRow(),
-                                showtime.getReservedSeats()
+                                showtime.getSeatsPerRow()
                         )
                 );
             }
+
+            // Create the movie response using the Movie entity
+            MovieSearchResponse movieResponse = new MovieSearchResponse(
+                    movie.getId(),
+                    movie.getTitle(),
+                    movie.getDescription(),
+                    movie.getPosterUrl(),
+                    movieShowtimes
+            );
+
+            movieResponses.add(movieResponse);
         }
 
-        // Convert the map values into a list
-        return new ArrayList<>(movieMap.values());
+        return movieResponses;
     }
 
 
     // Get details of a particular movie
     public MovieSearchResponse getMovieDetails(Long movieId) {
+
+        // Find the movie using its local database ID
+        Movie movie = movieRepository.findById(movieId).orElse(null);
+
+        // Check whether the movie exists
+        if (movie == null) {
+            return null;
+        }
+
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Calculate the last date of the 30-day period
+        LocalDate lastDate = today.plusDays(29);
 
         // Get all active showtimes for this movie
         List<Showtime> allShowtimes =
@@ -107,20 +128,6 @@ public class MovieService {
                         .findByMovieIdAndActiveTrueOrderByShowDateAscShowTimeAsc(
                                 movieId
                         );
-
-        // Check whether the movie exists
-        if (allShowtimes.isEmpty()) {
-            return null;
-        }
-
-        // Get movie information from the first record
-        Showtime firstShowtime = allShowtimes.get(0);
-
-        // Get today's date
-        LocalDate today = LocalDate.now();
-
-        // Calculate the last date of the 30-day period
-        LocalDate lastDate = today.plusDays(29);
 
         // Store showtimes available within the next 30 days
         List<MovieSearchResponse.ShowtimeInfo> movieShowtimes =
@@ -135,13 +142,11 @@ public class MovieService {
                 movieShowtimes.add(
                         new MovieSearchResponse.ShowtimeInfo(
                                 showtime.getId(),
-                                showtime.getCinemaName(),
                                 showtime.getShowDate(),
                                 showtime.getShowTime(),
                                 showtime.getPrice(),
                                 showtime.getTotalSeats(),
-                                showtime.getSeatsPerRow(),
-                                showtime.getReservedSeats()
+                                showtime.getSeatsPerRow()
                         )
                 );
             }
@@ -149,10 +154,10 @@ public class MovieService {
 
         // Return movie information and its available showtimes
         return new MovieSearchResponse(
-                firstShowtime.getMovieId(),
-                firstShowtime.getTitle(),
-                firstShowtime.getDescription(),
-                firstShowtime.getPosterUrl(),
+                movie.getId(),
+                movie.getTitle(),
+                movie.getDescription(),
+                movie.getPosterUrl(),
                 movieShowtimes
         );
     }

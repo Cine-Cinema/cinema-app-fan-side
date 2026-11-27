@@ -13,6 +13,9 @@ public class MovieSearchResponse {
     private String posterUrl;
     private List<ShowtimeInfo> showtimes;
 
+    public MovieSearchResponse() {
+    }
+
     public MovieSearchResponse(
             Long movieId,
             String title,
@@ -27,88 +30,126 @@ public class MovieSearchResponse {
         this.showtimes = showtimes;
     }
 
+    // Getters and Setters
+
     public Long getMovieId() {
         return movieId;
+    }
+
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPosterUrl() {
         return posterUrl;
     }
 
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
     public List<ShowtimeInfo> getShowtimes() {
         return showtimes;
     }
 
-    // Information about an individual screening
+    public void setShowtimes(List<ShowtimeInfo> showtimes) {
+        this.showtimes = showtimes;
+    }
+
+
+    // Inner class for showtime information
     public static class ShowtimeInfo {
 
         private Long showtimeId;
-        private String cinemaName;
         private LocalDate showDate;
         private LocalTime showTime;
         private BigDecimal price;
         private Integer totalSeats;
         private Integer seatsPerRow;
-        private Integer[] reservedSeats;
+
+        public ShowtimeInfo() {
+        }
 
         public ShowtimeInfo(
                 Long showtimeId,
-                String cinemaName,
                 LocalDate showDate,
                 LocalTime showTime,
                 BigDecimal price,
                 Integer totalSeats,
-                Integer seatsPerRow,
-                Integer[] reservedSeats
+                Integer seatsPerRow
         ) {
             this.showtimeId = showtimeId;
-            this.cinemaName = cinemaName;
             this.showDate = showDate;
             this.showTime = showTime;
             this.price = price;
             this.totalSeats = totalSeats;
             this.seatsPerRow = seatsPerRow;
-            this.reservedSeats = reservedSeats;
         }
+
+        // Getters and Setters
 
         public Long getShowtimeId() {
             return showtimeId;
         }
 
-        public String getCinemaName() {
-            return cinemaName;
+        public void setShowtimeId(Long showtimeId) {
+            this.showtimeId = showtimeId;
         }
 
         public LocalDate getShowDate() {
             return showDate;
         }
 
+        public void setShowDate(LocalDate showDate) {
+            this.showDate = showDate;
+        }
+
         public LocalTime getShowTime() {
             return showTime;
+        }
+
+        public void setShowTime(LocalTime showTime) {
+            this.showTime = showTime;
         }
 
         public BigDecimal getPrice() {
             return price;
         }
 
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
         public Integer getTotalSeats() {
             return totalSeats;
+        }
+
+        public void setTotalSeats(Integer totalSeats) {
+            this.totalSeats = totalSeats;
         }
 
         public Integer getSeatsPerRow() {
             return seatsPerRow;
         }
 
-        public Integer[] getReservedSeats() {
-            return reservedSeats;
+        public void setSeatsPerRow(Integer seatsPerRow) {
+            this.seatsPerRow = seatsPerRow;
         }
     }
 }
