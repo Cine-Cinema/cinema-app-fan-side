@@ -51,6 +51,16 @@ function MovieDetailsPage() {
         }).format(date);
     };
 
+    const handleDateSelect = (dateValue) => {
+        setSelectedDate(dateValue);
+
+        // Clear the previously selected showtime
+        setSelectedShowtime(null);
+
+        // Clear previously selected seats
+        setSelectedSeats([]);
+    };
+
     // Fetch movie details from the backend
     useEffect(() => {
 
@@ -169,7 +179,7 @@ function MovieDetailsPage() {
                                 className={`date-button ${
                                     selectedDate === dateValue ? "selected" : ""
                                 }`}
-                                onClick={() => setSelectedDate(dateValue)}
+                                onClick={() => handleDateSelect(dateValue)}
                             >
                                 <span>{displayDate(date)}</span>
                             </button>
@@ -226,19 +236,15 @@ function MovieDetailsPage() {
 
             {/* Seat Selection */}
             {selectedShowtime && (
-
                 <section className="seat-selection-section">
-
                     <h2>Select Your Seats</h2>
 
                     <p className="seat-selection-description">
                         Select one or more available seats.
                     </p>
 
-
                     {/* Seat Legend */}
                     <div className="seat-legend">
-
                         <div>
                             <span className="legend-seat available"></span>
                             <span>Available</span>
